@@ -22,9 +22,9 @@ def calculate_damage(
     # Dégâts de base (50 % de l'attaque initiale)
     base_damage = total_attack / 2
     print(f"Dégâts de base (50 % de l'attaque) : {base_damage:.2f}")
-    
+    defender_def *= 2
     # Ajustement basé sur le ratio attaque/défense
-    adjustment_factor = total_attack / ((defender_def*2) + 1)  # +1 pour éviter une division par zéro
+    adjustment_factor = total_attack / ((defender_def) + 1)  # +1 pour éviter une division par zéro
     print(f"Facteur d'ajustement (attaque/défense) : {adjustment_factor:.2f}  [ {defender_def} - {adjustment_factor}]")
     
     random_percentage = random.uniform(0.01, 0.05)
@@ -45,7 +45,7 @@ def calculate_damage_poké(
     element_avantage : float = 1.0,
 ) -> int:
 
-    base_dommage = (((2*level)/5+2)*power_att*(attack/defense)/20)
+    base_dommage = (((2*level)/5+2)*power_att*(attack/defense)/5)
     print(f"base damages : {base_dommage}")
     random_factor = random.uniform(0.85, 1.0)
     base_dommage *= random_factor

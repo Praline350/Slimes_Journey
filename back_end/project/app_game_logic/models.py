@@ -3,7 +3,17 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-ELEMENTS_CHOICE = [("EAU", "Eau"), ("FEU", "Feu"), ("AIR", "Air"), ("TERRE", "Terre"), ('NEUTRE', 'Neutre')]
+ELEMENTS_CHOICE = [
+    ("FLAMME", "Flamme"),
+    ("VAGUE", "Vague"),
+    ("OMBRE", "Ombre"),
+    ("LUMIERE", "Lumière"),
+    ("METAUX", "Métaux"),
+    ("ETHERE", "Éthéré"),
+    ("TEMPESTE", "Tempête"),
+    ("ECHO", "Echo"),
+    ("FUSION", "Fusion")
+]
 ITEMS_TYPE_CHOICE = [("ARME", "Arme"), ("ARMURE", "Armure")]
 SKILL_TYPE_CHOICE = [("ACTIVE", "Active"), ("PASSIVE", "Passive")]
 EFFECT_TYPE_CHOICE = [
@@ -82,6 +92,10 @@ class Player(models.Model):
 class Slime(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="slimes")
     name = models.CharField(max_length=60)
+    in_active_team = models.BooleanField(default=False)
+    is_fighter = models.BooleanField(default=False)
+    max_hp = models.PositiveIntegerField(default=20)
+    hp = models.IntegerField(default=20)
     magic_element = models.CharField(max_length=10, choices=ELEMENTS_CHOICE, default='NEUTRE')
     attack = models.IntegerField(default=0)
     defense = models.IntegerField(default=0)
@@ -93,7 +107,14 @@ class Slime(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+    def save(self, *args, **kwargs):
+        # Si ce slime est défini comme 'is_fighter'
+        if self.is_fighter:
+            # Passer tous les autres slimes du même joueur à `is_fighter=False`
+            Slime.objects.filter(player=self.player, is_fighter=True).exclude(id=self.id).update(is_fighter=False)
+        super().save(*args, **kwargs)  # Appeler la méthode save normale
+        
     @property
     def weapons(self):
         """
