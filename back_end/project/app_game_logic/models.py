@@ -6,12 +6,29 @@ User = get_user_model()
 ELEMENTS_CHOICE = [("EAU", "Eau"), ("FEU", "Feu"), ("AIR", "Air"), ("TERRE", "Terre"), ('NEUTRE', 'Neutre')]
 ITEMS_TYPE_CHOICE = [("ARME", "Arme"), ("ARMURE", "Armure")]
 SKILL_TYPE_CHOICE = [("ACTIVE", "Active"), ("PASSIVE", "Passive")]
+EFFECT_TYPE_CHOICE = [
+    ("POISON", "Poison"),
+    ("STUN", "Stun"),
+    ("BURN", "Burn"),
+    ("FREEZE", "Freeze"),
+    ("ELECTROCUTE", "Electrocute"),
+    ("HEAL", "Heal"),
+    ("BUFF", "Buff"),
+    ("DEBUFF", "Debuff"),
+]
 
 
 class Skill(models.Model):
     name = models.CharField(max_length=120)
     description = models.TextField()
     type = models.CharField(max_length=15, choices=SKILL_TYPE_CHOICE)
+
+class SkillEffect(models.Model):
+    skill = models.ForeignKey(Skill, related_name="effects", on_delete=models.CASCADE)
+    effect_type = models.CharField(max_length=15, choices=EFFECT_TYPE_CHOICE)
+    power = models.FloatField(help_text="Strength of the effect, e.g., poison damage per turn.")
+    duration = models.IntegerField(help_text="Duration in turns for the effect.", null=True, blank=True)
+    chance = models.FloatField(default=1.0, help_text="Chance (0.0 to 1.0) for the effect to apply.")
 
 class Item(models.Model):
     name = models.CharField(max_length=60)
@@ -35,6 +52,7 @@ class Item(models.Model):
 
 class Weapon(Item):
     attack = models.IntegerField(default=0)
+    magic_attack = models.IntegerField(default=0)
     magic_element = models.CharField(
         max_length=10, choices=ELEMENTS_CHOICE, null=True, blank=True
     )
@@ -44,6 +62,7 @@ class Weapon(Item):
     
 class Armor(Item):
     defense = models.IntegerField(default=0)
+    magic_defense = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -66,8 +85,10 @@ class Slime(models.Model):
     magic_element = models.CharField(max_length=10, choices=ELEMENTS_CHOICE, default='NEUTRE')
     attack = models.IntegerField(default=0)
     defense = models.IntegerField(default=0)
+    magic_attack = models.IntegerField(default=0)
+    magic_defense = models.IntegerField(default=0)
     agility = models.IntegerField(default=0)
-    items = models.ManyToManyField(Item, blank=True)
+    items = models.ManyToManyField(Item, through='SlimeItem')
     skills = models.ManyToManyField(Skill, blank=True)
 
     def __str__(self):
@@ -76,21 +97,69 @@ class Slime(models.Model):
     @property
     def weapons(self):
         """
-        Retourne tous les items de type Weapon
+        Retourne les armes avec leur quantité.
         """
-        return [item.get_real_instance() for item in self.items.all() 
-                if hasattr(item, 'weapon')]
+        return [
+            (slime_item.item.get_real_instance(), slime_item.quantity)
+            for slime_item in SlimeItem.objects.filter(slime=self, item__weapon__isnull=False)
+        ]
 
     @property
     def armors(self):
         """
-        Retourne tous les items de type Armor
+        Retourne les armures avec leur quantité.
         """
-        return [item.get_real_instance() for item in self.items.all() 
-                if hasattr(item, 'armor')]
+        return [
+            (slime_item.item.get_real_instance(), slime_item.quantity)
+            for slime_item in SlimeItem.objects.filter(slime=self, item__armor__isnull=False)
+        ]
 
     def get_typed_items(self):
         """
-        Retourne tous les items avec leur vrai type dans une liste
+        Retourne tous les items avec leur vrai type et leur quantité.
         """
-        return [item.get_real_instance() for item in self.items.all()]
+        return [
+            (slime_item.item.get_real_instance(), slime_item.quantity)
+            for slime_item in SlimeItem.objects.filter(slime=self)
+        ]
+    
+
+class SlimeItem(models.Model):
+    slime = models.ForeignKey(Slime, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)  # Quantité d'item
+    is_equipped = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('slime', 'item')  # Un couple slime-item unique
+
+    def __str__(self):
+        return f"{self.quantity}x {self.item.name} (Slime: {self.slime.name})"
+
+    @property
+    def weapons(self):
+        """
+        Retourne l'arme si l'item est une instance de Weapon.
+        """
+        item_instance = self.item.get_real_instance()
+        if isinstance(item_instance, Weapon):
+            return item_instance
+        return None
+
+    @property
+    def armors(self):
+        """
+        Retourne l'armure si l'item est une instance de Armor.
+        """
+        item_instance = self.item.get_real_instance()
+        if isinstance(item_instance, Armor):
+            return item_instance
+        return None
+    
+    @classmethod
+    def get_equipped_items(cls, slime):
+        """
+        Retourne tous les items équipés pour un slime donné.
+        """
+        return cls.objects.filter(slime=slime, is_equipped=True)
+
