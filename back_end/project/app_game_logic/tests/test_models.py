@@ -127,6 +127,7 @@ class TestBattle:
                 if item.type == 'ARME':
 
                     print(f"ATT {item.attack}")
+                    print(f"magic elmt {item.magic_element}")
             print(f"name {slime.name}")
             print(f" att {slime.attack}")
             print(f' hp {slime.max_hp}')
