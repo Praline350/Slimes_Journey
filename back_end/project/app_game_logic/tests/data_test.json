@@ -1,0 +1,176 @@
+{
+    "players": [
+      {
+        "username": "Player1"
+      },
+      {
+        "username": "Player2"
+      }
+    ],
+    "slimes": [
+      {
+        "player": "Player1",
+        "name": "Flamy",
+        "level": 4,
+        "in_active_team": true,
+        "is_fighter": false,
+        "max_hp": 50,
+        "hp": 50,
+        "magic_element": "FLAMME",
+        "attack": 15,
+        "defense": 10,
+        "magic_attack": 20,
+        "magic_defense": 5,
+        "agility": 8,
+        "items": ["Sword of Fire", "Fire Shield"],
+        "skills": ["Flame Burst", "Fireball"]
+      },
+      {
+        "player": "Player1",
+        "name": "Aquatic",
+        "level": 6,
+        "in_active_team": true,
+        "is_fighter": true,
+        "max_hp": 60,
+        "hp": 60,
+        "magic_element": "VAGUE",
+        "attack": 10,
+        "defense": 15,
+        "magic_attack": 25,
+        "magic_defense": 10,
+        "agility": 6,
+        "items": ["Water Staff", "Water Armor"],
+        "skills": ["Water Blast", "Healing Rain"]
+      },
+      {
+        "player": "Player2",
+        "name": "Shadow",
+        "level": 8,
+        "in_active_team": true,
+        "is_fighter": true,
+        "max_hp": 40,
+        "hp": 40,
+        "magic_element": "OMBRE",
+        "attack": 12,
+        "defense": 8,
+        "magic_attack": 18,
+        "magic_defense": 12,
+        "agility": 10,
+        "items": ["Shadow Cloak", "Dagger of Darkness"],
+        "skills": ["Stealth", "Backstab"]
+      }
+    ],
+    "items": [
+      {
+        "name": "Sword of Fire",
+        "type": "WEAPON",
+        "description": "A blazing sword infused with fire.",
+        "magic_element": "FLAMME",
+        "attack": 20,
+        "defense": 0,
+        "magic_attack": 10,
+        "magic_defense": 0,
+        "agility": 0,
+        "price": 100,
+        "skills": ["Flame Burst"]
+      },
+      {
+        "name": "Fire Shield",
+        "type": "ARMURE",
+        "description": "A shield that protects the user from fire attacks.",
+        "magic_element": "FLAMME",
+        "attack": 0,
+        "defense": 15,
+        "magic_attack": 0,
+        "magic_defense": 10,
+        "agility": 0,
+        "price": 50,
+        "skills": ["Fireball"]
+      },
+      {
+        "name": "Water Staff",
+        "type": "WEAPON",
+        "description": "A staff that controls the waters of the world.",
+        "magic_element": "VAGUE",
+        "attack": 10,
+        "defense": 0,
+        "magic_attack": 20,
+        "magic_defense": 0,
+        "agility": 0,
+        "price": 80,
+        "skills": ["Water Blast"]
+      },
+      {
+        "name": "Water Armor",
+        "type": "ARMURE",
+        "description": "Armor that absorbs water-based attacks.",
+        "magic_element": "VAGUE",
+        "attack": 0,
+        "defense": 20,
+        "magic_attack": 0,
+        "magic_defense": 15,
+        "agility": 0,
+        "price": 70,
+        "skills": ["Water Blast"]
+      },
+      {
+        "name": "Shadow Cloak",
+        "type": "ARMURE",
+        "description": "A cloak that helps the user blend into shadows.",
+        "magic_element": "OMBRE",
+        "attack": 0,
+        "defense": 5,
+        "magic_attack": 0,
+        "magic_defense": 0,
+        "agility": 10,
+        "price": 40,
+        "skills": ["Stealth"]
+      },
+      {
+        "name": "Dagger of Darkness",
+        "type": "WEAPON",
+        "description": "A dagger that deals critical damage in the dark.",
+        "magic_element": "OMBRE",
+        "attack": 15,
+        "defense": 0,
+        "magic_attack": 5,
+        "magic_defense": 0,
+        "agility": 5,
+        "price": 60,
+        "skills": ["Backstab"]
+      }
+    ],
+    "skills": [
+      {
+        "name": "Flame Burst",
+        "type": "ACTIVE",
+        "power": 30
+      },
+      {
+        "name": "Fireball",
+        "type": "ACTIVE",
+        "power": 25
+      },
+      {
+        "name": "Water Blast",
+        "type": "ACTIVE",
+        "power": 20
+      },
+      {
+        "name": "Healing Rain",
+        "type": "ACTIVE",
+        "power": 40
+      },
+      {
+        "name": "Stealth",
+        "type": "PASSIVE",
+        "power": 0
+      },
+      {
+        "name": "Backstab",
+        "type": "ACTIVE",
+        "power": 50
+      }
+    ]
+  }
+  

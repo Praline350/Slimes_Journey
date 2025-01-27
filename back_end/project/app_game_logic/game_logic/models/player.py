@@ -9,16 +9,16 @@ class GamePlayerTeam:
     def __str__(self):
         return self.username
     
-    def select_figther(self):
+    def select_fighter(self):
         for slime in self.slimes:
-            if slime.is_figter:
-                return slime
-            else:
-                return None
+            if slime.is_fighter:
+                return slime        
+        return None
 
 class GameSlime:
     def __init__(self, slime):
         self.name = slime.name
+        self.level = slime.level
         self.is_fighter = slime.is_fighter
         self.max_hp = slime.max_hp
         self.hp = slime.hp

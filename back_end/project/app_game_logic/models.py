@@ -27,18 +27,26 @@ EFFECT_TYPE_CHOICE = [
     ("DEBUFF", "Debuff"),
 ]
 
-
-class Skill(models.Model):
-    name = models.CharField(max_length=120)
-    description = models.TextField()
-    type = models.CharField(max_length=15, choices=SKILL_TYPE_CHOICE)
-
 class SkillEffect(models.Model):
-    skill = models.ForeignKey(Skill, related_name="effects", on_delete=models.CASCADE)
     effect_type = models.CharField(max_length=15, choices=EFFECT_TYPE_CHOICE)
     power = models.FloatField(help_text="Strength of the effect, e.g., poison damage per turn.")
     duration = models.IntegerField(help_text="Duration in turns for the effect.", null=True, blank=True)
     chance = models.FloatField(default=1.0, help_text="Chance (0.0 to 1.0) for the effect to apply.")
+
+    def __str__(self):
+        return self.effect_type
+
+
+class Skill(models.Model):
+    name = models.CharField(max_length=120, default='Skill Undifined')
+    description = models.TextField(default="Descritpion")
+    power = models.PositiveIntegerField(default=0)
+    type = models.CharField(max_length=15, choices=SKILL_TYPE_CHOICE)
+    effects = models.ManyToManyField(SkillEffect, related_name="skills")
+
+    def __str__(self):
+        return self.name
+
 
 class Item(models.Model):
     name = models.CharField(max_length=60)
@@ -70,6 +78,7 @@ class Player(models.Model):
 class Slime(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="slimes")
     name = models.CharField(max_length=60)
+    level = models.PositiveIntegerField(default=1)
     in_active_team = models.BooleanField(default=False)
     is_fighter = models.BooleanField(default=False)
     max_hp = models.PositiveIntegerField(default=20)
@@ -100,7 +109,7 @@ class Inventory(models.Model):
     quantity = models.IntegerField(default=1)  # Quantité d'item
 
     class Meta:
-        unique_together = ('player', 'item')  # Un couple slime-item unique
+        unique_together = ('player', 'item')  # Un couple player-item unique
 
     def __str__(self):
         return f"{self.quantity}x {self.item.name} (player: {self.player.username})"
