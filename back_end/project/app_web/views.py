@@ -11,4 +11,4 @@ class HomePlayerView(View):
     template_name = 'app_web/home_player.html'
 
     def get(self, request):
-        pass
+        return render(request, self.template_name)

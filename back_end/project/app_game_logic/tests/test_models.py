@@ -1,9 +1,9 @@
 import os
 import json
 import pytest
-from app_game_logic.models import Player, Slime, Skill, Item, Inventory
+from app_game_logic.models import Player, Slime, Skill, Item, Inventory, Ennemy
 from app_game_logic.game_logic.gameplay.test_algo import *
-from app_game_logic.game_logic.gameplay.simple_battle import *
+from app_game_logic.game_logic.gameplay import simple_battle as battle
 from app_game_logic.game_logic.models.player import *
 
 
@@ -27,7 +27,8 @@ def setup_test_data():
         skill = Skill.objects.create(
             name=skill_data['name'],
             type=skill_data['type'],
-            power=skill_data['power']
+            power=skill_data['power'],
+            magic_element=skill_data['magic_element']
         )
         skills[skill_data['name']] = skill
 
@@ -72,13 +73,32 @@ def setup_test_data():
             slime.skills.add(skills[skill_name])
         slimes.append(slime)
 
+    ennemies = []
+    for ennemy_data in data['ennemy']:
+        ennemy = Ennemy.objects.create(
+            name=ennemy_data['name'],
+            max_hp=ennemy_data['max_hp'],
+            hp=ennemy_data['hp'],
+            magic_element=ennemy_data['magic_element'],
+            attack=ennemy_data['attack'],
+            defense=ennemy_data['defense'],
+            magic_attack=ennemy_data['magic_attack'],
+            magic_defense=ennemy_data['magic_defense'],
+            agility=ennemy_data['agility']
+        )
+        for item_name in ennemy_data['items']:
+            ennemy.items.add(items[item_name])
+        for skill_name in ennemy_data['skills']:
+            ennemy.skills.add(skills[skill_name])
+        ennemies.append(ennemy)
+
     for player_data in data['players']:
         player = players[player_data['username']]
         for item_name in data['items']:
             item = items[item_name['name']]
             Inventory.objects.create(player=player, item=item, quantity=1)
 
-    return players, slimes, items, skills
+    return players, slimes, items, skills, ennemies
 
 @pytest.mark.django_db
 class TestPlayer:
@@ -95,7 +115,7 @@ class TestPlayer:
         assert flamy_slime.player.username == 'Player1'
         assert flamy_slime.attack == 15
         
-        # Vérifie les attributs du slime 'Frosty'
+        # Vérifie les attributs du slime 'Aquatic'
         Aquatic_slime = next(slime for slime in slimes if slime.name == 'Aquatic')
         assert Aquatic_slime.max_hp == 60
 
@@ -104,77 +124,12 @@ class TestPlayer:
 
         # Vérifie l'association avec les compétences pour 'Flamy'
         assert skills['Fireball'] in flamy_slime.skills.all()
-
-#     def test_slime_dict_data(self):
-#         player = Player.objects.create(username='Player')
-#         assert player.username == 'Player'
-#         slime1 = Slime.objects.create(
-#             player=player,
-#             name='SlimeTest',
-#             magic_element='FEU',
-#             attack =10,
-#             defense = 10,
-#             magic_attack = 15,
-#             magic_defense = 12
-#             )
-#         assert slime1.name == 'SlimeTest'
-#         weapon1 = Item.objects.create(name='Epee des pronfondeur', attack=10, magic_element='EAU', price=45)
-#         armor1 = Item.objects.create(name="Armure du vide", defense=16)
-#         assert weapon1.name == 'Epee des pronfondeur'
-#         assert weapon1.attack == 10
-
-#         slime1.items.add(weapon1, armor1)
-#         base_att = slime1.attack
-#         base_def = slime1.defense
-#         base_magic_att = slime1.magic_attack
-#         base_magic_def = slime1.magic_defense
             
 @pytest.mark.django_db
 class TestBattle:
 
-    # def setup_method(self):
-    #     self.player = Player.objects.create(username="Player")
-    #     self.slime_data1 = {
-    #         "name": "Flamy",
-    #         "magic_element": "FLAMME",
-    #         "in_active_team": True,
-    #         "attack": 15,
-    #         "defense": 8,
-    #         "magic_attack": 18,
-    #         "magic_defense": 10,
-    #         "agility": 12,
-    #     }
-    #     self.slime_data2 = {
-    #         "name": "Aquarius",
-    #         "magic_element": "VAGUE",
-    #         "in_active_team": False,
-    #         "attack": 10,
-    #         "defense": 12,
-    #         "magic_attack": 20,
-    #         "magic_defense": 15,
-    #         "agility": 9,
-    #     }
-    #     self.slime_data3 = {
-    #         "name": "Spectra",
-    #         "magic_element": "ETHERE",
-    #         "in_active_team": False,
-    #         "attack": 8,
-    #         "defense": 14,
-    #         "magic_attack": 22,
-    #         "magic_defense": 18,
-    #         "agility": 10,
-    #     }
-    #     self.slime1 = Slime.objects.create(player=self.player, **self.slime_data1)
-    #     self.slime2 = Slime.objects.create(player=self.player, **self.slime_data2)
-    #     self.slime3 = Slime.objects.create(player=self.player, **self.slime_data3)
-        
-    #     self.weapon1 = Item.objects.create(name='Epee des pronfondeur', attack=10, magic_element='VAGUE', price=45, type='ARME')
-    #     self.armor1 = Item.objects.create(name="Armure du vide", defense=10, type='ARMURE')
-    #     self.slime1.items.add(self.weapon1, self.armor1)
-    
-
     def test_make_team(self, setup_test_data):
-        players, slimes, items, skills = setup_test_data
+        players, slimes, items, skills, ennemies = setup_test_data
 
         for slime in slimes:
             print(f"Slimes : {slime.name} - {slime.skills.all()} -")
@@ -183,33 +138,41 @@ class TestBattle:
 
         # Front : Input début de combat
         # Création des équipe
-        teamA = GamePlayerTeam(players['Player1'])
-        teamB = GamePlayerTeam(players['Player2'])
-        battleA, battleB = init_teams_for_battle(teamA, teamB)
-        fighterA = teamA.select_fighter()
-        fighterB = teamB.select_fighter()
-        print(f" Figther : {fighterA} VS {fighterB}")
+        team = GamePlayerTeam(players['Player1'])
+        fighter = team.select_fighter()
+        gobelin = next(ennemy for ennemy in ennemies if ennemy.name == 'Gobelin')
+        ennemy = GameEnnemy(gobelin)
+        print(f" Figther : {fighter} VS {ennemy.name}")
+        # Envoie des infos au Front (Les slimes en position, les skills du fighter, etc)
+        # Attente input Redirection choix
+        while fighter.hp > 0 or ennemy.hp > 0:
+            first_attacker, second_attacker = battle.is_first_player(fighter, ennemy)
 
-        
-
-        # Envvoie des infos au Front (Les slimes en position, les skills du fighter, etc)
-        # Attente input Redirecttion choix
-        while fighterA.hp > 0 | fighterB.hp > 0:
-            first_player, last_player = is_first_player(fighterA, fighterB)
-            input = 'attack'
-            # TODO: implémenté le choix user
-            damageA = battleA.handle_action(input)
-            damageB = battleB.handle_action(input)
-            if fighterA.agility >= fighterB.agility:
-                battleA.make_damage(damageA, fighterB)
-                battleB.make_damage(damageB, fighterA)
+            if first_attacker == fighter:
+                input_action = 'attack'  # Placeholder pour l'input du joueur
+                enemy_action = ennemy.choose_action()
             else:
-                battleB.make_damage(damageB, fighterA)
-                battleA.make_damage(damageA, fighterB)
-                
+                input_action = ennemy.choose_action()  # L'ennemi agit en premier
+                enemy_action = 'attack'  # Le joueur attaquera ensuite
             
-            fighterA = teamA.select_fighter()
-            fighterB = teamB.select_fighter()
+            # TODO: implémenté le choix user
+            print(f" Ennemy hp = {ennemy.hp}")
+            damage = battle.handle_action(input_action, first_attacker, second_attacker)
+
+            battle.make_damage(damage, second_attacker)
+            if second_attacker.hp <= 0:
+                print(f"{second_attacker.name} est KO! {first_attacker.name} remporte la victoire!")
+                break
+            damage = battle.handle_action(enemy_action, second_attacker, first_attacker)
+            battle.make_damage(damage, first_attacker)
+            print(f"{first_attacker.name} a {first_attacker.hp} HP restants.")
+
+            # Vérifier si le premier attaquant est KO
+            if first_attacker.hp <= 0:
+                print(f"{first_attacker.name} est KO! {second_attacker.name} remporte la victoire!")
+                break
+
+            fighter = team.select_fighter()
         
 
         

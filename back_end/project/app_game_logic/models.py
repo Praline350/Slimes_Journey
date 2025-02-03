@@ -41,6 +41,7 @@ class Skill(models.Model):
     name = models.CharField(max_length=120, default='Skill Undifined')
     description = models.TextField(default="Descritpion")
     power = models.PositiveIntegerField(default=0)
+    magic_element = models.CharField(max_length=10, choices=ELEMENTS_CHOICE, default='NEUTRE')
     type = models.CharField(max_length=15, choices=SKILL_TYPE_CHOICE)
     effects = models.ManyToManyField(SkillEffect, related_name="skills")
 
@@ -113,5 +114,21 @@ class Inventory(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.item.name} (player: {self.player.username})"
+    
+
+class Ennemy(models.Model):
+    name = models.CharField(max_length=100, default='ennemy')
+    level = models.PositiveIntegerField(default=1)
+    max_hp = models.PositiveIntegerField(default=50)
+    hp = models.IntegerField(default=50)
+    magic_element = models.CharField(max_length=10, choices=ELEMENTS_CHOICE, default='NEUTRE')
+    attack = models.IntegerField(default=0)
+    defense = models.IntegerField(default=0)
+    magic_attack = models.IntegerField(default=0)
+    magic_defense = models.IntegerField(default=0)
+    agility = models.IntegerField(default=0)
+    items = models.ManyToManyField(Item, blank=True)
+    skills = models.ManyToManyField(Skill, blank=True)
+
 
 

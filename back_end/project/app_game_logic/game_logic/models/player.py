@@ -1,5 +1,5 @@
 # Models des class 'Miroir' des joueurs 
-
+import random
 
 class GamePlayerTeam:
     def __init__(self, player):
@@ -31,9 +31,31 @@ class GameSlime:
         self.items = slime.items.all()
         self.skills = slime.skills.all()
         
-
     def __str__(self):
         return self.name
+    
+class GameEnnemy:
+    def __init__(self, ennemy):
+        self.name = ennemy.name
+        self.level = ennemy.level
+        self.max_hp = ennemy.max_hp
+        self.hp = ennemy.hp
+        self.magic_element = ennemy.magic_element
+        self.attack = ennemy.attack
+        self.defense = ennemy.defense
+        self.magic_attack = ennemy.magic_attack
+        self.magic_defense = ennemy.magic_defense
+        self.agility = ennemy.agility
+        self.items = ennemy.items.all()
+        self.skills = ennemy.skills.all()
+        
+    def __str__(self):
+        return self.name
+    
+    def choose_action(self):
+        actions = ['attack', 'skill1'] # Ajouter les skills à ses choix
+        return random.choice(actions)  # Retourne une action aléatoire
+
     
 
 

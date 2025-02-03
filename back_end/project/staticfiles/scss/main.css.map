@@ -1,0 +1,13 @@
+{
+	"version": 3,
+	"file": "main.css",
+	"sources": [
+		"main.scss",
+		"variables.scss",
+		"components.scss",
+		"layout.scss",
+		"mixin.scss"
+	],
+	"names": [],
+	"mappings": ""
+}

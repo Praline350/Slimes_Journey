@@ -60,6 +60,22 @@
         "skills": ["Stealth", "Backstab"]
       }
     ],
+    "ennemy": [
+      {
+        "name": "Gobelin",
+        "level": 4,
+        "max_hp": 50,
+        "hp": 50,
+        "magic_element": "OMBRE",
+        "attack": 15,
+        "defense": 10,
+        "magic_attack": 20,
+        "magic_defense": 5,
+        "agility": 8,
+        "items": ["Sword of Fire", "Fire Shield"],
+        "skills": ["Flame Burst", "Fireball"]
+      }
+    ],
     "items": [
       {
         "name": "Sword of Fire",
@@ -144,32 +160,38 @@
       {
         "name": "Flame Burst",
         "type": "ACTIVE",
-        "power": 30
+        "power": 30,
+        "magic_element": "FLAMME"
       },
       {
         "name": "Fireball",
         "type": "ACTIVE",
-        "power": 25
+        "power": 25,
+        "magic_element": "FLAMME"
       },
       {
         "name": "Water Blast",
         "type": "ACTIVE",
-        "power": 20
+        "power": 20,
+        "magic_element": "VAGUE"
       },
       {
         "name": "Healing Rain",
         "type": "ACTIVE",
-        "power": 40
+        "power": 40,
+        "magic_element": "VAGUE"
       },
       {
         "name": "Stealth",
         "type": "PASSIVE",
-        "power": 0
+        "power": 0,
+        "magic_element": "FLAMME"
       },
       {
         "name": "Backstab",
         "type": "ACTIVE",
-        "power": 50
+        "power": 50,
+        "magic_element": "OMBRE"
       }
     ]
   }

@@ -28,6 +28,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Active django-compressor pour utiliser 'COMPRESS_PRECOMPILERS'
+# Compilation pour les fichier scss
+COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
+
+# Autres configurations pour django-compressor
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = False  # Compilation en développement
+
+
 
 # Application definition
 
@@ -38,6 +47,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "compressor",
+    "sass_processor",
     # django app
     "app_authentication",
     "app_game_logic",
@@ -59,7 +70,7 @@ ROOT_URLCONF = "project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR.joinpath("templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -127,6 +138,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+# For Scss
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+]
+
+SASS_PROCESSOR_ENABLED = True
 
 
 # Default primary key field type
