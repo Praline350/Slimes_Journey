@@ -1,0 +1,107 @@
+// RESET et général
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: $bg-color;
+}
+
+nav {
+    height: 60px;
+}
+
+div {
+    border: 1px solid black;
+}
+
+// ✅ Menu latéral
+
+
+// ✅ Conteneur principal
+main {
+    display: flex;
+    flex-direction: row;  
+}
+
+aside {
+    width: 150px;
+    background: #333;
+    color: white;
+    height: 100vh;  // Prend toute la hauteur de l'écran
+}
+
+// ✅ Sections empilées l'une sur l'autre
+section {
+    display: flex;
+    flex-direction: column;
+    flex: 1; 
+}
+
+
+
+// ✅ Informations de l'équipe
+.team-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr;
+    gap: $spacing;
+    padding: 20px;
+}
+
+// ✅ Informations du slime (en vertical)
+.slime-info {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing;
+    width: 400px;
+    &__header{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    &__stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;  // Crée deux colonnes de largeur égale
+        gap: 10px;  // Espace entre les colonnes
+        margin-top: 10px;  // Espacement au-dessus des stats
+    }
+}
+
+
+.slime-info__stats div {
+    padding: 10px;  // Ajouter un peu d'espace autour de chaque stat
+    border: 1px solid #ccc;  // Optionnel : ajouter une bordure autour de chaque stat
+    border-radius: 5px;  // Optionnel : arrondir les coins
+}
+
+// ✅ Inventaire et équipement (en ligne)
+.inventory{
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); // 5 colonnes avec largeur égale
+    grid-gap: 15px;  // Espacement entre les éléments
+    grid-template-rows: repeat(3, 70px); // 3 lignes avec une hauteur fixe de 150px
+    background: #ddd;
+    padding: $spacing;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.equipment {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+
+}
+
+// ✅ Section des actions (joueur iddle)
+.actions {
+    background: #ccc;
+    padding: $spacing;
+    border-radius: 5px;
+    
+}

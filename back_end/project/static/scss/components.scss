@@ -1,0 +1,47 @@
+
+
+.slime-sprite {
+    align-items: center;
+    height: 150px;
+    width: auto;
+}
+
+.slime-sprite-container {
+    display: flex;
+    flex-direction: column;  // pour aligner les éléments verticalement
+    align-items: center;  // centre les éléments horizontalement
+    justify-content: center;  // centre les éléments verticalement
+    text-align: center; // pour centrer le texte à l'intérieur des éléments
+}
+
+
+.slime-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center; // Centrer le texte et l'image
+    justify-content: center;
+    width: 100%;  
+    height: 80px;
+    justify-content: space-around;
+    
+    &__sprite {
+        width: 40px;  // Taille fixe pour l'image
+        height: 40px; // Taille fixe pour l'image
+        object-fit: cover;  // Pour s'assurer que l'image couvre l'espace sans déformation
+    }
+    &__info {
+        border: None;
+        display: flex;
+        flex-direction: column;
+    }
+
+    h3 {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    p {
+        font-size: 12px;
+        text-align: center;
+    }
+}

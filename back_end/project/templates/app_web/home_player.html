@@ -1,7 +1,93 @@
 {% extends 'base.html'%}
+{%  load static %}
 
 {% block content %}
-<h1>Home player</h1>
+
+<main>
+    <aside>
+        <!-- Menu side (team, world, quests, marché) -->
+    </aside>
+    <section>
+        <!-- Info team -->
+        <div class="team-info">
+            <div class="slime-info">
+                <div class="slime-info__header">
+                    <!-- Name, magic elmt, level -->
+                {% for slime in slimes %}
+                {% if slime.is_fighter %}
+                    <h2>{{slime.magic_element}}</h2>
+                    <h2> {{slime.name}} </h2>
+                    <h2>Level : {{slime.level}} </h2>
+
+                </div>
+                <div class="slime-sprite-container">
+                    <!-- Sprite Slime & flèche -->
+                    <img class="slime-sprite" src="{% static 'images/slime base.png' %}">
+                </div>
+                <div class="slime-info__stats">
+                    <div>
+                        <strong>HP : </strong> {{slime.hp}} / {{slime.max_hp}}
+                    </div>
+                    <div>
+                        <strong>Attack : </strong> {{slime.attack}}
+                    </div>
+                    <div>
+                        <strong>Defense : </strong> {{slime.defense}}
+                    </div>
+                    <div>
+                        <strong>Magic attack : </strong> {{slime.magic_attack}}
+                    </div>
+                    <div>
+                        <strong>Magic defense : </strong> {{slime.magic_defense}}
+                    </div>
+                    <div>
+                        <strong>Agility : </strong> {{slime.agility}}
+                    </div>
+                </div>
+                
+            </div>
+            <div class="equipment">
+                <!-- Équipement -->
+                 
+                 <h3>WEAPONS :</h3>
+                 {% for item in slime.items.all %}
+                 {% if item.type == 'ARME'%}
+                 <div class="slime-item">
+                    <div>
+                        <img class="slime-item__sprite" src="{% static  'images/item-test.png' %}">
+                    </div>
+                    <div class="slime-item__info">
+                        <h3> {{item.name}} </h3>
+                        <p>Price : {{item.price}} </p>
+                    </div>    
+                 </div>
+                 {% endif%}
+                 {% endfor%}
+                 <h3>ARMORS : </h3>
+                 {% for item in slime.items.all %}
+                 {% if item.type == 'ARMURE'%}
+                 <div class="slime-item">
+                    <img class="slime-item__sprite" src="{% static  'images/item-test.png' %}">
+                    <h3> {{item.name}} </h3>
+                    <p>Price : {{item.price}} </p>
+                    
+                 </div>
+                 {% endif %}
+                {% endfor %}
+
+            </div>
+            {% endif %}
+            {% endfor %}
+            <div class="inventory">
+                <h3>INVENTORY : </h3>
+                <!-- Inventaire -->
+            </div>
+        </div>
+        <div class="actions">
+            <!-- acttions iddle du joueur -->
+        </div>
+    </section>
+</main>
 
 {% endblock content%}
 
